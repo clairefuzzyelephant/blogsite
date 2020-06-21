@@ -11,6 +11,7 @@ const express = require("express");
 
 // import models so we can interact with the database
 const User = require("./models/user");
+const Post = require("./models/post");
 
 // import authentication library
 const auth = require("./auth");
@@ -31,6 +32,24 @@ router.get("/whoami", (req, res) => {
 
   res.send(req.user);
 });
+
+
+router.post("/submitPost", (req, res) => {
+  const newPost = new Post({
+    user: req.body.username,
+    title: req.body.title,
+    text: req.body.text,
+  })
+  newPost.save().then((post) => {
+    res.send(post);
+  })
+});
+
+router.get("/retrievePosts", (req, res) => {
+  Post.find({"username": req.query.user}).then((posts) => {
+    res.send(posts);
+  });
+})
 
 router.post("/initsocket", (req, res) => {
   // do nothing if user not logged in

@@ -1,9 +1,10 @@
 import React, { Component } from "react";
 import { Router } from "@reach/router";
 import NotFound from "./pages/NotFound.js";
-import Skeleton from "./pages/Skeleton.js";
+import Homepage from "./pages/Homepage.js";
 
 import "../utilities.css";
+import "./App.css";
 
 import { socket } from "../client-socket.js";
 
@@ -24,7 +25,7 @@ class App extends Component {
   componentDidMount() {
     get("/api/whoami").then((user) => {
       if (user._id) {
-        // they are registed in the database, and currently logged in.
+        console.log('loggedIN');
         this.setState({ userId: user._id });
       }
     });
@@ -46,17 +47,17 @@ class App extends Component {
 
   render() {
     return (
-      <>
+      <div>
         <Router>
-          <Skeleton
-            path="/"
-            handleLogin={this.handleLogin}
-            handleLogout={this.handleLogout}
-            userId={this.state.userId}
-          />
+            <Homepage
+              path="/"
+              handleLogin={this.handleLogin}
+              handleLogout={this.handleLogout}
+              userId={this.state.userId}
+            />
           <NotFound default />
         </Router>
-      </>
+      </div>
     );
   }
 }
