@@ -36,7 +36,7 @@ router.get("/whoami", (req, res) => {
 
 router.post("/submitPost", (req, res) => {
   const newPost = new Post({
-    user: req.body.username,
+    user: req.body.user,
     title: req.body.title,
     text: req.body.text,
   })
@@ -46,7 +46,7 @@ router.post("/submitPost", (req, res) => {
 });
 
 router.get("/retrievePosts", (req, res) => {
-  Post.find({"username": req.query.user}).then((posts) => {
+  Post.find({"user": req.query.user}).then((posts) => {
     res.send(posts);
   });
 })
