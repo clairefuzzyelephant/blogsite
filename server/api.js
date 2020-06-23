@@ -15,6 +15,7 @@ const Post = require("./models/post");
 
 // import authentication library
 const auth = require("./auth");
+const ObjectID = require('mongodb').ObjectID;
 
 // api endpoints: all these paths will be prefixed with "/api/"
 const router = express.Router();
@@ -44,6 +45,10 @@ router.post("/submitPost", (req, res) => {
     res.send(post);
   })
 });
+
+router.post("/deletePost", (req, res) => {
+  Post.deleteOne({"_id": ObjectID(req.body.id)}).then((post) => res.send(post));
+})
 
 router.get("/retrievePosts", (req, res) => {
   Post.find({"user": req.query.user}).then((posts) => {

@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import GoogleLogin, { GoogleLogout } from "react-google-login";
+import {confirmAlert} from 'react-confirm-alert';
+import 'react-confirm-alert/src/react-confirm-alert.css'; 
 
 import "../utilities.css";
 import "./App.css";
@@ -96,6 +98,28 @@ class App extends Component {
     }
   }
 
+  deletePost = (id) => {
+    confirmAlert({
+      title: 'Confirm post deletion',
+      message: 'You are deleting a post. This cannot be undone!',
+      buttons: [
+        {
+          label: 'Cancel',
+        },
+        {
+          label: 'Delete post',
+          onClick: () =>  {
+            post("api/deletePost", {id: id}).then((post) => {
+              const { postList } = this.state;
+              const reloadPosts = postList.filter(item => item._id !== id);
+              this.setState({ postList: reloadPosts });
+            });
+          }
+        }
+      ]
+    })
+  }
+
   render() {
     return (
       <div className="background">
@@ -136,6 +160,9 @@ class App extends Component {
             </div>
             {this.state.postList != null ? this.state.postList.map((post) => 
               <div className='postContainer'>
+                <div className='deleteButton'>
+                  <button onClick={() => this.deletePost(post._id)}>Delete</button>
+                </div>
                 <div className='postTitle'>
                   {post.title}
                 </div>

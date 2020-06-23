@@ -44,6 +44,7 @@
     margin-bottom: 10px;
     margin-top: 10px;
     margin-left: 10px;
+    position: relative;
 }
 
 .postTitle {
@@ -58,5 +59,25 @@
     color: gray;
     font-size: 10px;
     padding-bottom: 10px;
+}
+
+.deleteButton button {
+    font-family: 'Open Sans';
+    color: gray;
+    font-size: 10px;
+    position: absolute;
+    border-style: none;
+    fill-opacity: 0;
+    border-radius: 10px;
+    text-decoration: underline;
+}
+
+.deleteButton button:hover {
+    cursor: pointer;
+}
+
+.deleteButton {
+    float: right;
+    margin-right: 30px;
 }
 
