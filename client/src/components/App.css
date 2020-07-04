@@ -1,7 +1,9 @@
 @import url('https://fonts.googleapis.com/css?family=Croissant+One|Open+Sans|Open+Sans+Condensed:300|Chivo|Quicksand&display=swap');
 
 .background {
-    background-image:linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3)), url('./images/beach-wallpaper.jpeg');
+    background-image:linear-gradient(rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0.3)), url('./images/mountains_and_lake.jpg');
+    background-repeat: no-repeat;
+    background-size: cover;
     overflow: scroll;
     height: 100vh;
     width: 100vw;
@@ -53,6 +55,7 @@
 
 .postBody {
     font-size: 12px;
+    white-space: pre-wrap;
 }
 
 .postDate {
