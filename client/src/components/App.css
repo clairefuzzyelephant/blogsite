@@ -61,6 +61,26 @@
     padding-bottom: 10px;
 }
 
+.editButton button {
+    font-family: 'Open Sans';
+    color: gray;
+    font-size: 10px;
+    position: absolute;
+    border-style: none;
+    fill-opacity: 0;
+    border-radius: 10px;
+    text-decoration: underline;
+}
+
+.editButton button:hover {
+    cursor: pointer;
+}
+
+.editButton {
+    float: right;
+    margin-right: 60px;
+}
+
 .deleteButton button {
     font-family: 'Open Sans';
     color: gray;

@@ -50,6 +50,12 @@ router.post("/deletePost", (req, res) => {
   Post.deleteOne({"_id": ObjectID(req.body.id)}).then((post) => res.send(post));
 })
 
+router.post("/updatePost", (req, res) => {
+  Post.replaceOne({"_id": ObjectID(req.body.id)}, 
+  {"user": req.body.user, "title": req.body.title, "text": req.body.text, "timestamp": req.body.timestamp}).then((post) => 
+    res.send(post));
+})
+
 router.get("/retrievePosts", (req, res) => {
   Post.find({"user": req.query.user}).then((posts) => {
     res.send(posts);

@@ -24,6 +24,9 @@ class App extends Component {
       inputTitle: '',
       inputText: '',
       postList: undefined,
+      editTitle: '',
+      editText: '',
+      editingPost: null,
     };
   }
 
@@ -41,7 +44,6 @@ class App extends Component {
     const userToken = res.tokenObj.id_token;
     post("/api/login", { token: userToken }).then((user) => {
       this.setState({ userId: user.googleid });
-      console.log(user.googleid);
       this.loadPosts(user.googleid);
       post("/api/initsocket", { socketid: socket.id });
     });
@@ -72,8 +74,49 @@ class App extends Component {
     }
   }
 
+  handleEditTitleChange = (event) => {
+    const value = event.target.value;
+    this.setState({
+      editTitle: value,
+    });
+    if (event.keyCode === 13) { //pressing enter key
+      event.preventDefault();
+    }
+  }
+
+  handleEditTextChange = (event) => {
+    const value = event.target.value;
+    this.setState({
+      editText: value,
+    });
+    if (event.keyCode === 13) { //pressing enter key
+      event.preventDefault();
+    }
+  }
+
+  saveEditedPost = (currentPost) => {
+    if (this.state.editText.length !== 0) {
+      const body = {id: currentPost._id, user: this.state.userId, title: this.state.editTitle, text: this.state.editText, timestamp: currentPost.timestamp};
+      post("/api/updatePost", body).then((post) => {
+        this.loadPosts(this.state.userId);
+        this.setState({
+          editTitle: '',
+          editText: '',
+          editingPost: null,
+        })
+      })
+    }
+  }
+
+  cancelEditing = (event) => {
+    this.setState({
+      editingPost: null,
+      editTitle: '',
+      editText: '',
+    })
+  }
+
   loadPosts = (googleid) => {
-    console.log('loading');
     get("/api/retrievePosts", {user: googleid}).then((posts) => {
       posts.reverse();
       this.setState({
@@ -94,6 +137,28 @@ class App extends Component {
           inputTitle: '',
           inputText: '',
         })
+      });
+    }
+  }
+
+  editPost = (id) => {
+    if (this.state.editingPost != null && this.state.editingPost._id != id) {
+      confirmAlert({
+        title: 'You are currently editing a post!',
+        message: 'Please save the current post before editing another post, or discard your changes by clicking Cancel.',
+        buttons: [
+          {
+            label: 'OK',
+          },
+        ]
+      })
+    }
+    else {
+      const currentPost = this.state.postList.find(item => item._id == id);
+      this.setState({
+        editingPost: currentPost,
+        editTitle: currentPost.title,
+        editText: currentPost.text,
       });
     }
   }
@@ -160,18 +225,49 @@ class App extends Component {
             </div>
             {this.state.postList != null ? this.state.postList.map((post) => 
               <div className='postContainer'>
+                <div className='editButton'>
+                  <button onClick={() => this.editPost(post._id)}>Edit</button>
+                </div>
                 <div className='deleteButton'>
                   <button onClick={() => this.deletePost(post._id)}>Delete</button>
                 </div>
                 <div className='postTitle'>
-                  {post.title}
+                  {this.state.editingPost != post 
+                  ? post.title 
+                  : <textarea
+                      name="title_text"
+                      cols="30"
+                      rows="1"
+                      value={this.state.editTitle}
+                      onChange={this.handleEditTitleChange}
+                    ></textarea>
+                  }
                 </div>
                 <div className='postDate'>
-                  Posted on {new Date(post.timestamp).toLocaleString()}
+                  Posted on {new Date(post.timestamp).toLocaleString()}{post.updated != null && post.timestamp != post.updated 
+                    ? <>, updated {new Date(post.updated).toLocaleString()}</>
+                    : null
+                  }
                 </div>
                 <div className='postBody'>
-                  {post.text}
+                  {this.state.editingPost != post 
+                  ? post.text
+                  : <textarea
+                      name="paragraph_text"
+                      cols="50"
+                      rows="5"
+                      value={this.state.editText}
+                      onChange={this.handleEditTextChange}
+                    ></textarea>
+                }
                 </div>
+                <div>
+                  {this.state.editingPost == post
+                  ? <><button onClick={() => this.saveEditedPost(post)}>Save</button>
+                  <button onClick={() => this.cancelEditing()}>Cancel</button></>
+                  : null
+                  }
+                  </div>
               </div>) : null}
             </div>
           </div>
